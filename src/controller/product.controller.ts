@@ -5,6 +5,12 @@ import { registerValidation } from "../validation/product.validation"
 
 const repository = Manager.getRepository(Product)
 
+export const GetProducts = async (req: Request, res: Response) => {
+  const products = await repository.find()
+
+  res.send(products)
+}
+
 export const CreateProduct = async (req: Request, res: Response) => {
   const body = req.body
   

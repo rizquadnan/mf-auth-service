@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AuthenticatedUser, Login, Logout, Register } from './controller/auth.controller'
-import { CreateProduct } from './controller/product.controller';
+import { CreateProduct, GetProducts } from './controller/product.controller';
 import { CheckAuthState } from './middleware/auth.middleware';
 
 export const routes = (router: Router) => {
@@ -10,5 +10,5 @@ export const routes = (router: Router) => {
   router.post('/api/logout', CheckAuthState, Logout)
 
   router.post('/api/products', CheckAuthState, CreateProduct)
-
+  router.get('/api/products', CheckAuthState, GetProducts)
 }
