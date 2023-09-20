@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: secretpassword
+      MARIADB_DATABASE: auth-db
+      MARIADB_USER: app-user
+      MARIADB_PASSWORD: secretpassword
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

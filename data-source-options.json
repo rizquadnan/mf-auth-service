@@ -1,0 +1,13 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "username": "app-user",
+    "password": "secretpassword",
+    "database": "auth-db",
+    "entities": [
+        "src/entities/*.ts"
+    ],
+    "logging": false,
+    "synchronize": true
+}
