@@ -2,8 +2,11 @@ import { Request, Response } from 'express';
 import bcryptjs from "bcryptjs"
 
 import { registerValidation } from '../validation/register.validation';
-import { UserRepository } from '../db-connector';
 import { sign, verify } from 'jsonwebtoken';
+import { User } from '../entities/user.entity';
+import { Manager } from '../db-connector';
+
+const repository = Manager.getRepository(User)
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string
 
@@ -24,7 +27,7 @@ export const Register = async (req: Request, res: Response) => {
     });
   }
   // save password to database
-  const { password, ...user } = await UserRepository.save({
+  const { password, ...user } = await repository.save({
     firstName: body.firstName,
     lastName: body.lastName,
     email: body.email,
@@ -37,7 +40,7 @@ export const Register = async (req: Request, res: Response) => {
 // LOGIN USER
 export const Login = async (req: Request, res: Response) => {
   // check if user exists in db
-  const user = await UserRepository.findOneBy(
+  const user = await repository.findOneBy(
     {
       email: req.body.email
     }
@@ -59,7 +62,7 @@ export const Login = async (req: Request, res: Response) => {
 
   // don't return password after successful login
   const { password, ...data } = user;
-  
+
   // send token via cookies
   const token = sign(
     {
@@ -70,42 +73,16 @@ export const Login = async (req: Request, res: Response) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 //1day
   })
-  
+
   res.send({
     message: 'INFO :: Successfully logged in.'
   })
 }
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
-  // get cookie from authenticated user
-  const jwt = req.cookies?.['jwt'];
-
-  // get user id from jwt
-let payload: any;
- try {
-   payload = verify(jwt, JWT_SECRET_KEY)
-
-   if (!payload) {
-     return res.status(401).send({
-       message: 'ERROR :: User unauthenticated!'
-     })
-   }
- } catch (error) {
-   return res.status(401).send({
-     message: 'ERROR :: User unauthenticated!'
-   })
- }
-  // return user info  for user id
-  const result = await UserRepository.findOneBy(payload.id)
-
-  if (result) {
-    const { password, ...user} = result
-    res.send(user)
-  } else {
-    return res.status(404).send({
-      message: 'ERROR :: User does not exists!'
-    })
-  }
+  // @ts-ignore
+  const { password, ...user } = req['user']
+  res.send(user);
 }
 
 export const Logout = async (req: Request, res: Response) => {
