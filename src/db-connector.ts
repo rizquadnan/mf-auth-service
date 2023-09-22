@@ -1,7 +1,6 @@
 import { DataSource } from "typeorm";
 import { User } from "./entities/user.entity";
 
-console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 export const dataSource = new DataSource({

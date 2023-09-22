@@ -9,7 +9,7 @@ initDb()
 import { routes } from './routes';
 import cookieParser from "cookie-parser";
 
-const EXPRESS_PORT = process.env.WEB_PORT
+const EXPRESS_PORT = process.env.PORT; 
 const app = express()
 
 app.use(express.json())
