@@ -1,17 +1,19 @@
 import { DataSource } from "typeorm";
 import { User } from "./entities/user.entity";
 
-console.log('process.env.DS_HOST', process.env.DS_HOST)
+console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+const IS_PROD = process.env.NODE_ENV === 'production';
+
 export const dataSource = new DataSource({
-  type: 'mariadb',
-  host: process.env.DS_HOST,
-  port: 3306,
-  username: process.env.DS_USER,
-  password: process.env.DS_PASS,
-  database: process.env.DS_DB,
-  entities: ['src/entities/*.ts'],
+  type: "postgres",
+  url: process.env.DATABASE_URL,
+  host: process.env.PGHOST,
+  port: Number(process.env.PGPORT as string),
+  username: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  entities: IS_PROD ? ["build/entities/*.js"] : ["src/entities/*.ts"],
   logging: false,
-  synchronize: true
+  synchronize: true,
 });
 
 export const Manager = dataSource.manager
